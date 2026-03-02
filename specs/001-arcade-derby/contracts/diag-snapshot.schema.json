@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "po-diag-snapshot",
+  "title": "PoDiagSnapshot",
+  "description": "Real-time telemetry payload served by the /diag route. All field names carry the Po prefix per FR-033. Sensitive fields (poSessionId, poUserId) are masked before rendering per FR-030.",
+  "type": "object",
+  "required": [
+    "poCapturedAt",
+    "poFps",
+    "poGeometryCount",
+    "poHorsePositions",
+    "poSessionId"
+  ],
+  "properties": {
+    "poCapturedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of when this snapshot was captured.",
+      "example": "2026-02-24T14:30:00.000Z"
+    },
+    "poFps": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 240,
+      "description": "Frames per second at the moment of capture, rounded to 1 decimal place.",
+      "example": 59.8
+    },
+    "poGeometryCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of active Three.js BufferGeometry objects in the scene at capture time.",
+      "example": 31
+    },
+    "poHorsePositions": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "description": "Current position of each horse in inches (0–60). Ordered by laneId ascending.",
+      "items": {
+        "type": "object",
+        "required": ["laneId", "positionInches"],
+        "properties": {
+          "laneId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "description": "Lane number. Lane 1 is the player; lanes 2–8 are static placeholders in v1.0."
+          },
+          "positionInches": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 60,
+            "description": "Horse distance from start line in inches. 60 = finish crossed."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "poSessionId": {
+      "type": "string",
+      "description": "MASKED session identifier. Format: first character + '***' + last character (e.g. 'P***2'). The raw value MUST NOT appear in the rendered output.",
+      "pattern": "^.\\*{3}.$",
+      "example": "P***2"
+    },
+    "poUserId": {
+      "type": ["string", "null"],
+      "description": "MASKED user identifier, or null if no user context exists (v1.0 default). When non-null, same masking format as poSessionId applies.",
+      "example": null
+    },
+    "poRacePhase": {
+      "type": "string",
+      "enum": ["Idle", "Countdown", "Racing", "Finished"],
+      "description": "Current race FSM phase at capture time."
+    },
+    "poElapsedSeconds": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Stopwatch value in seconds at capture time. 0 when not Racing."
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "poCapturedAt": "2026-02-24T14:30:05.123Z",
+      "poFps": 59.8,
+      "poGeometryCount": 31,
+      "poHorsePositions": [
+        { "laneId": 1, "positionInches": 24.5 },
+        { "laneId": 2, "positionInches": 0 },
+        { "laneId": 3, "positionInches": 0 },
+        { "laneId": 4, "positionInches": 0 },
+        { "laneId": 5, "positionInches": 0 },
+        { "laneId": 6, "positionInches": 0 },
+        { "laneId": 7, "positionInches": 0 },
+        { "laneId": 8, "positionInches": 0 }
+      ],
+      "poSessionId": "P***2",
+      "poUserId": null,
+      "poRacePhase": "Racing",
+      "poElapsedSeconds": 42.1
+    }
+  ]
+}

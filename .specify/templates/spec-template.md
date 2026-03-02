@@ -84,11 +84,17 @@
 
 ### Functional Requirements
 
+<!-- CONSTITUTION NOTE (Principle II): Every feature that reads from an API MUST also work
+     with the mock data layer (src/services/mockData.ts). Add an FR for offline fallback
+     if this feature introduces new API-backed data. -->
+
 - **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
 - **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-0XX**: React client MUST display accurate mock data when the API is unreachable
+  (Constitution Principle II — API-Resilient React Client)
 
 *Example of marking unclear requirements:*
 

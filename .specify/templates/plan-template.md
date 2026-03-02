@@ -31,7 +31,19 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**PoHorseRace Constitution v1.0.0 — mandatory gates (all MUST be ✅ before merge):**
+
+| # | Gate | Status |
+|---|------|---------|
+| I | No dead code, unused imports, or orphaned assets introduced | ☐ |
+| II | Every new API call goes through the service layer — no direct `fetch`/`axios` in components | ☐ |
+| II | Offline/mock fallback exists for every new API-backed resource | ☐ |
+| III | All new classes/modules follow SOLID; explanatory comments on public interfaces | ☐ |
+| IV | Any GoF pattern applied is annotated with pattern name + justification comment | ☐ |
+| V | Tests written before implementation; offline + live paths both covered | ☐ |
+| VI | Structured log entries emitted by all new service calls | ☐ |
+
+> Fill in this table; leave Complexity Tracking section below blank unless a violation requires justification.
 
 ## Project Structure
 

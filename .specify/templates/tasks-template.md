@@ -50,7 +50,12 @@ description: "Task list template for feature implementation"
 
 - [ ] T001 Create project structure per implementation plan
 - [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [ ] T003 [P] Configure ESLint + Prettier (zero-warnings policy, Constitution Principle I)
+- [ ] T004 [P] Scaffold service-layer abstraction + mock data stub (Constitution Principle II)
+  - Create `src/services/api/` (live) and `src/services/mock/` (seed data) directories
+  - Wire Strategy pattern so components receive the same interface regardless of mode
+- [ ] T005 [P] Add connectivity-detection hook; render "Running in demo mode" banner when offline
+  (Constitution Principle II + IV — Strategy pattern)
 
 ---
 
@@ -156,6 +161,14 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
+- [ ] TXXX **Zero-Waste Audit** (Constitution Principle I): delete unused files, dead exports,
+      orphaned assets; audit package.json for unused dependencies
+- [ ] TXXX **Offline-Mode QA** (Constitution Principle II): start the app with no backend;
+      verify mock data renders and "demo mode" banner appears
+- [ ] TXXX **GoF / SOLID Comment Review** (Constitution Principles III & IV): confirm every
+      public interface has an explanatory comment and every pattern usage is annotated
+- [ ] TXXX **Observability Spot-Check** (Constitution Principle VI): verify structured log
+      entries are emitted for all new service calls
 
 ---
 
