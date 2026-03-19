@@ -346,7 +346,13 @@ test.describe('Suite D — ball launch mechanics', () => {
     await page.evaluate(() => {
       (window as unknown as { __poTestBridge: PoTestBridge }).__poTestBridge.triggerCountdown();
     });
-    await page.waitForTimeout(3_500); // wait for Racing
+    // Poll for Racing — avoids fixed 3.5 s wait which can fail when countdown is
+    // slightly deferred by CPU load (same pattern as C1/C2 fix)
+    await page.waitForFunction(
+      () => (window as unknown as { __poTestBridge: { getRacePhase: () => string } })
+        .__poTestBridge.getRacePhase() === 'Racing',
+      { timeout: 10_000 },
+    );
 
     // Verify all balls are in trough before launch
     const before = await bridge(page, b => b.getBalls());
@@ -376,7 +382,11 @@ test.describe('Suite D — ball launch mechanics', () => {
     await page.evaluate(() => {
       (window as unknown as { __poTestBridge: PoTestBridge }).__poTestBridge.triggerCountdown();
     });
-    await page.waitForTimeout(3_500);
+    await page.waitForFunction(
+      () => (window as unknown as { __poTestBridge: { getRacePhase: () => string } })
+        .__poTestBridge.getRacePhase() === 'Racing',
+      { timeout: 10_000 },
+    );
 
     // Launch first ball
     await page.evaluate(() =>

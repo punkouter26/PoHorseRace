@@ -173,22 +173,35 @@ test.describe('PoHorseRace GFX verification', () => {
     page.on('pageerror', e => pageErrors.push(e));
 
     await page.goto('/game');
-    await waitForCanvas(page);
-
-    // Start race
-    const canvas = page.locator('canvas');
-    const box    = await canvas.boundingBox();
-    expect(box).not.toBeNull();
-
-    await page.mouse.click(
-      box!.x + box!.width  * 0.35,
-      box!.y + box!.height * 0.80,
+    // Wait for the test bridge (DEV mode) to be available
+    await page.waitForFunction(
+      () => typeof (window as unknown as { __poTestBridge?: unknown }).__poTestBridge !== 'undefined',
+      { timeout: 15_000 },
+    );
+    // Wait for Rapier WASM to finish initialising so timers run at normal speed
+    await page.waitForFunction(
+      () => !!(window as unknown as { __poTestBridge: { isRapierReady: () => boolean } })
+        .__poTestBridge.isRapierReady(),
+      { timeout: 30_000 },
     );
 
-    // Wait long enough for a bot lane to naturally finish (FR-003 bots advance
-    // automatically — fastest bot reaches 60" in ~8–12 s demo time).
-    // Cap at 20 s to keep CI fast.
-    await page.waitForTimeout(20_000);
+    // Drive the race state-machine deterministically via the bridge
+    await page.evaluate(
+      () => (window as unknown as { __poTestBridge: { triggerCountdown: () => void } })
+        .__poTestBridge.triggerCountdown()
+    );
+    await page.waitForFunction(
+      () => (window as unknown as { __poTestBridge: { getRacePhase: () => string } })
+        .__poTestBridge.getRacePhase() === 'Racing',
+      { timeout: 8_000 },
+    );
+    await page.evaluate(
+      () => (window as unknown as { __poTestBridge: { triggerFinish: (id: number) => void } })
+        .__poTestBridge.triggerFinish(3)
+    );
+    // Allow summary card entrance animation to complete (~300 ms)
+    await page.waitForTimeout(800);
+
     await captureAndVerify(page, '04-finished');
 
     expect(pageErrors).toHaveLength(0);

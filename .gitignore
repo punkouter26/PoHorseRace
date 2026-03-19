@@ -36,6 +36,16 @@ coverage/
 # TypeScript incremental
 *.tsbuildinfo
 
+# Vite cache
+.vite/
+
+# Vitest result artifacts
+vitest.results.json
+
+# Pack artifacts
+*.tgz
+*.zip
+
 # Playwright test artifacts
 test-results/
 playwright-report/
