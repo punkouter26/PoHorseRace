@@ -59,6 +59,18 @@ if (import.meta.env.DEV) {
       const activeBallIds = new Set(usePoBallStore.getState().balls.map(b => b.id));
       return PoBallRegistry.getPositions().filter(p => activeBallIds.has(p.id));
     },
+    /**
+     * Returns true once Rapier WASM has initialised and at least one
+     * PoBall RigidBody has registered its position getter.  Tests that
+     * depend on reliable setInterval timing should wait for this before
+     * triggering store actions, otherwise heavy WASM init CPU load can
+     * throttle JS timers and cause spurious failures.  For normal mode
+     * (3 balls for lane 1) and demo mode (24 balls) we wait for >= 1.
+     */
+    // True only when a Rapier rigid body has its trough position (z ≈ 2.4).
+    // Balls register immediately on mount but translation() returns {0,0,0}
+    // until WASM finishes loading and the body is fully instantiated.
+    isRapierReady: () => PoBallRegistry.getPositions().some(p => Math.abs(p.z) > 0.1),
   };
 }
 

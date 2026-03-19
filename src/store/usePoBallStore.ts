@@ -103,7 +103,7 @@ export const usePoBallStore = create<PoBallStore>()((set, get) => ({
 
   setPhase(ballId, phase) {
     if (phase === 'Scoring') {
-      // Start 4-second return timer (enough time to roll down the lower return ramp)
+      // Start 3-second return timer (T050 spec: returnTimerSeconds=3.0)
       const existing = get()._returnTimers[ballId];
       if (existing !== undefined) clearInterval(existing);
 
@@ -111,7 +111,7 @@ export const usePoBallStore = create<PoBallStore>()((set, get) => ({
       set(s => ({
         balls: updateBall(s.balls, ballId, {
           phase: 'Scoring',
-          returnTimerSeconds: 4,
+          returnTimerSeconds: 3,
         }),
         _returnTimers: { ...s._returnTimers, [ballId]: timer },
       }));

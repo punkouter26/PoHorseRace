@@ -81,9 +81,9 @@ export function PoTargetTriangle({ laneId }: PoTargetTriangleProps): JSX.Element
   );
 
   const handleScore = (holeId: number, points: number, ballId: number | null, scoredLaneId: number) => {
-    // Math reality: 3 balls taking 6s to return means max ~7-9 balls scored per 15s.
-    // To finish a 100-point race purely on these rare sinks, the multiplier must be large.
-    const finalPoints = gameMode === 'demo' ? points * 25 : points;
+    // Each scored ball advances the horse by points × DEMO_SCORE_MULTIPLIER × 0.6 inches.
+    // Multiplier of 4 keeps demo races exciting (~9-10 hits to finish the 60" track).
+    const finalPoints = gameMode === 'demo' ? points * 4 : points;
     addScore(scoredLaneId, finalPoints);
 
     if (ballId !== null) {

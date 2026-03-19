@@ -83,6 +83,9 @@ export const usePoRaceStore = create<PoRaceStore>()((set, get) => ({
   },
 
   startRace() {
+    // Guard: if finishRace was called from Countdown, don't restart the race
+    if (get().phase === 'Finished') return;
+
     const existing = get()._elapsedTimer;
     if (existing !== null) clearInterval(existing);
 
@@ -99,13 +102,18 @@ export const usePoRaceStore = create<PoRaceStore>()((set, get) => ({
     // M3 fix: idempotency guard — prevents double-fire from concurrent triggers
     if (get().phase === 'Finished') return;
 
+    // Cancel BOTH timers so a still-running countdown cannot override Finished
+    // by calling startRace() after we've already set phase to Finished.
     const elapsed = get()._elapsedTimer;
     if (elapsed !== null) clearInterval(elapsed);
+    const countdown = get()._countdownTimer;
+    if (countdown !== null) clearInterval(countdown);
 
     set({
       phase: 'Finished',
       winnerLaneId: laneId,
       _elapsedTimer: null,
+      _countdownTimer: null,
       summaryStats: stats ?? null,
     });
   },

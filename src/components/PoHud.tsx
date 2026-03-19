@@ -67,10 +67,14 @@ export function PoHud(): JSX.Element {
         return best;
     }, lanes[0]);
 
-    // Player score
+    // Game mode — must be declared before displayLane which references it
+    const gameMode = usePoGameModeStore(s => s.gameMode);
+
+    // Player score — in demo mode show the leading lane's score instead
     const playerLane = lanes.find(l => l.isPlayerControlled);
-    const playerScore = playerLane?.score ?? 0;
-    const playerColor = LANE_COLORS[playerLane?.id ?? 1] ?? '#ef4444';
+    const displayLane = gameMode === 'demo' ? leader : playerLane;
+    const playerScore = displayLane?.score ?? 0;
+    const playerColor = LANE_COLORS[displayLane?.id ?? 1] ?? '#ef4444';
 
     // Display strings
     const totalSec = Math.floor(displayMs / 1000);
@@ -82,7 +86,6 @@ export function PoHud(): JSX.Element {
     const inputMode = usePoInputModeStore(s => s.inputMode);
     const toggleInputMode = usePoInputModeStore(s => s.toggleInputMode);
     const isSwipe = inputMode === 'swipe';
-    const gameMode = usePoGameModeStore(s => s.gameMode);
 
     return (
         <>
@@ -172,7 +175,9 @@ export function PoHud(): JSX.Element {
                             }}
                         />
                         <span style={{ fontSize: '28px', fontWeight: 'bold', color: leaderColor, textShadow: `0 0 12px ${leaderColor}80`, letterSpacing: '2px' }}>
-                            Horse {leader?.id ?? '—'}
+                            {(phase === 'Idle' || phase === 'Countdown' || lanes.every(l => l.positionInches === 0))
+                              ? '—'
+                              : `Horse ${leader?.id ?? '—'}`}
                         </span>
                     </div>
                 </div>

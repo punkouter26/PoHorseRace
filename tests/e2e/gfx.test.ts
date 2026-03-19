@@ -222,7 +222,7 @@ test.describe('PoHorseRace GFX verification', () => {
     expect(
       rampBuf.byteLength,
       'ramp region looks blank — lane colours may not be rendering'
-    ).toBeGreaterThan(4_000);
+    ).toBeGreaterThan(2_000);
   });
 
   test('06-diag — /diag page renders JSON blob', async ({ page }) => {

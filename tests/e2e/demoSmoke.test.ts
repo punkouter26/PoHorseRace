@@ -35,7 +35,7 @@ async function launchDemoFromHome(page: Page): Promise<void> {
 }
 
 test.describe('DEMO mode smoke', () => {
-  test.setTimeout(75_000);
+  test.setTimeout(60_000);
 
   test('home DEMO button launches autonomous 8-lane race loop', async ({ page }) => {
     const pageErrors: Error[] = [];

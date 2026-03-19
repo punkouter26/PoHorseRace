@@ -18,6 +18,7 @@ import { Html } from '@react-three/drei';
 import { usePoRaceStore } from '../store/usePoRaceStore';
 import { usePoLaneStore } from '../store/usePoLaneStore';
 import { usePoBallStore } from '../store/usePoBallStore';
+import { usePoGameModeStore } from '../store/usePoGameModeStore';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -46,6 +47,7 @@ export function PoSummaryCard(): JSX.Element | null {
 
   const lanes = usePoLaneStore(s => s.lanes);
   const sessionReleaseSpeedsMph = usePoBallStore(s => s.sessionReleaseSpeedsMph);
+  const gameMode = usePoGameModeStore(s => s.gameMode);
 
   if (phase !== 'Finished') return null;
 
@@ -55,9 +57,11 @@ export function PoSummaryCard(): JSX.Element | null {
   // Accuracy: each scoring hole visit = 1 ball launched (proxy until Phase 4 tracks directly)
   // sessionReleaseSpeedsMph.length = total balls launched this session
   const ballsLaunched = sessionReleaseSpeedsMph.length;
-  const accuracyStr = ballsLaunched === 0
-    ? '--'
-    : `${(((playerLane?.score ?? 0) / Math.max(ballsLaunched, 1)) * 100).toFixed(1)}%`;
+  const accuracyStr = gameMode === 'demo'
+    ? 'N/A (Demo)'
+    : ballsLaunched === 0
+      ? '--'
+      : `${(((playerLane?.score ?? 0) / Math.max(ballsLaunched, 1)) * 100).toFixed(1)}%`;
 
   return (
     <Html

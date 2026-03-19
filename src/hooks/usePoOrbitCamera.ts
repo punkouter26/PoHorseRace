@@ -45,12 +45,14 @@ export function usePoOrbitCamera() {
     ? WALL_OFFSET_Y + (PO_LANE_Y_POSITIONS[winnerLaneId - 1] ?? 0)
     : WALL_OFFSET_Y;
 
+  // Finish camera: pull back wide enough to show the full horse wall and
+  // the ramp below so the entire race outcome is visible at a glance.
   const targetPos = isOrbiting
-    ? [PO_HORSE_FINISH_X - 0.5, winnerY + 1.5, 6] as [number, number, number]
+    ? [PO_HORSE_FINISH_X + 4, winnerY + 3.5, 16] as [number, number, number]
     : RACE_CAM_POS;
 
   const targetTgt = isOrbiting
-    ? [PO_HORSE_FINISH_X, winnerY, 0] as [number, number, number]
+    ? [PO_HORSE_FINISH_X + 1.5, winnerY, 0] as [number, number, number]
     : RACE_CAM_TARGET;
 
   const [springs, api] = useSpring(() => ({
